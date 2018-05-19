@@ -26,7 +26,9 @@
 
 // }
 
-
+/*  
+*   This is my Test getPageFromServer Function
+*/
 function getPageFromServer(pageIndex) {
     let array = []
     for (let i = 0; i <= 999; i++) {
@@ -54,21 +56,27 @@ function getPageFromServer(pageIndex) {
 function getDataRangeFromServer(startIndex, endIndex) {
     
     return new Promise(function (resolve) {
-
         let startPage = parseInt(startIndex / 25)
         let endPage = parseInt(endIndex / 25)
         let result = []
         for (let i = startPage; i <= endPage; i++) {
             getPageFromServer(i).then(array => {
-                result.push.apply(result, array)
+                
+                if(i == startPage) {
+                    result.push.apply(result, array.slice(startIndex % 25, endIndex < 25 ? endIndex + 1: 25))
+                } else if (i == endPage) {
+                    result.push.apply(result, array.slice(0, endIndex % 25 + 1))
+                } else {
+                    result.push.apply(result, array)
+                }
+                
             });
         }
-    }).then(result => {
         resolve(result)
     });
 }
 
-getDataRangeFromServer(3, 51).then(result => console.log(result))
+getDataRangeFromServer(0, 49).then(result => console.log(result))
 
 
 
